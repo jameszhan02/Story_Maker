@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+yarn ts-node src/services/gateway/index.ts

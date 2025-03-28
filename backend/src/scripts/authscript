@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+yarn ts-node src/services/auth/index.ts
