@@ -1,9 +1,12 @@
 import bcrypt from "bcryptjs";
+import chalk from "chalk";
+import cors from "cors";
 import express, { Request, Response, Router } from "express";
 
 const app = express();
-app.use(express.json());
 const router = Router();
+app.use(cors());
+app.use(express.json()); // 这个是必需的
 
 // JWT secret key (should be placed in environment variables in actual applications)
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
@@ -57,7 +60,8 @@ router.post("/register", async (req: Request, res: Response) => {
 app.use(router);
 
 const PORT = process.env.AUTH_PORT || 3001;
-
 app.listen(PORT, () => {
-  console.log(`Auth service is running on port ${PORT}`);
+  console.log(
+    `${chalk.green("Auth service is running on port")} ${chalk.yellow(PORT)}`
+  );
 });
