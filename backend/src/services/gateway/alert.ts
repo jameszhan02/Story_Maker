@@ -27,6 +27,22 @@
  *
  */
 
+/*
+ *  common error codes:
+ *  - 500: internal server error
+ *  - 503: service unavailable
+ *  - 400: bad request
+ *  - 401: unauthorized
+ *  - 403: forbidden
+ *  - 404: not found
+ *  - 429: too many requests
+ *  - 408: request timeout
+ *  - 409: conflict
+ *  - 413: payload too large
+ *  - 415: unsupported media type
+ *  - 422: unprocessable entity
+ */
+
 import { NextFunction, Request, Response } from "express";
 
 export type AlertLevel = "INFO" | "WARNING" | "ERROR" | "CRITICAL";
@@ -55,11 +71,6 @@ export type AlertServiceType = {
     res: Response,
     next: NextFunction
   ) => Promise<void>;
-};
-
-const sendAlert = async (alert: Alert) => {
-  const { level, service, message, details } = alert;
-  console.error(`[${level}] [${service}] ${message}`, details);
 };
 
 export class AlertService {
@@ -116,18 +127,18 @@ export class AlertService {
     stats.requestCount++;
     res.on("finish", () => {
       //TODO: make this more in details later.
-      if (res.statusCode > 200) {
+      if (res.statusCode >= 500) {
         stats.errorCount++;
       }
       stats.errorRate = stats.errorCount / stats.requestCount;
     });
   };
 
-  private sendAlert(alert: Alert) {
+  private sendAlert = (alert: Alert) => {
     //TODO: send alert in an different way later.
     const { level, service, message, details } = alert;
     console.error(`🚨:[${level}] [${service}] ${message}`, details);
-  }
+  };
 
   public staticRequestCount = (
     req: Request,

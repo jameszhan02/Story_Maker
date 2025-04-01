@@ -33,6 +33,8 @@ const authProxy = createProxyMiddleware({
     proxyReq: fixRequestBody,
   },
 });
+
+// == Alert Middleware ==
 app.use(alertService.staticRequestCount);
 app.use(alertService.responseTimeAlert);
 app.use(alertService.errorRateAlert);
