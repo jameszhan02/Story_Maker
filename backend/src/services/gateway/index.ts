@@ -3,6 +3,8 @@ import cors from "cors";
 import express from "express";
 import helmet from "helmet";
 import { createProxyMiddleware, fixRequestBody } from "http-proxy-middleware";
+import swaggerUi from "swagger-ui-express";
+import { swaggerSpec } from "../../docs/swagger";
 import { AlertService } from "./alert";
 import { getSystemHealth } from "./health";
 
@@ -19,6 +21,9 @@ const alertService = new AlertService({
 app.use(helmet()); // security headers
 app.use(cors()); // cors
 app.use(express.json());
+
+// swagger ui
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // gateway middleware
 const authProxy = createProxyMiddleware({
@@ -39,7 +44,19 @@ app.use(alertService.staticRequestCount);
 app.use(alertService.responseTimeAlert);
 app.use(alertService.errorRateAlert);
 
-// == Health Check ==
+/**
+ * @swagger
+ * /health:
+ *   get:
+ *     summary: Health check endpoint
+ *     tags: [System]
+ *     description: Returns the health status of the API and its services
+ *     responses:
+ *       200:
+ *         description: System health information
+ *       500:
+ *         description: System health check failed
+ */
 app.get("/health", async (req, res) => {
   const health = await getSystemHealth("API Gateway", {});
   res.json(health);

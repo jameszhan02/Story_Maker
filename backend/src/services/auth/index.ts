@@ -26,7 +26,28 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(refreshToken);
 
-// register route
+/**
+ * @swagger
+ * /api/auth/register:
+ *   post:
+ *     summary: Register new user
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/username_password_request'
+ *     responses:
+ *       200:
+ *         description: User registered successfully
+ *       400:
+ *         description: Username and password are required
+ *       409:
+ *         description: Username already exists
+ *       500:
+ *         description: Internal server error
+ */
 router.post("/register", async (req: Request, res: Response) => {
   try {
     const { username, password } = req.body;
@@ -63,7 +84,26 @@ router.post("/register", async (req: Request, res: Response) => {
   }
 });
 
-// login route
+/**
+ * @swagger
+ * /api/auth/login:
+ *   post:
+ *     summary: User login
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/username_password_request'
+ *     responses:
+ *       200:
+ *         description: Login successful
+ *       401:
+ *         description: Invalid username or password
+ *       500:
+ *         description: Internal server error
+ */
 router.post("/login", async (req: Request, res: Response) => {
   const { username, password } = req.body;
   try {
@@ -100,7 +140,20 @@ router.post("/login", async (req: Request, res: Response) => {
   }
 });
 
-// logout route
+/**
+ * @swagger
+ * /api/auth/logout:
+ *   post:
+ *     summary: User logout
+ *     tags: [Auth]
+ *     security:
+ *       - cookieAuth: []
+ *     responses:
+ *       200:
+ *         description: Logout successful
+ *       401:
+ *         description: Unauthorized
+ */
 router.post("/logout", requireAuth, (_req: Request, res: Response) => {
   res.clearCookie(COOKIE_NAME);
   res.status(200).json({ message: "Logout successful" });
