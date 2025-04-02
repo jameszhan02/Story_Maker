@@ -1,4 +1,5 @@
 import chalk from "chalk";
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
 import helmet from "helmet";
@@ -7,6 +8,9 @@ import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "../../docs/swagger";
 import { AlertService } from "./alert";
 import { getSystemHealth } from "./health";
+import { refreshToken, requireAuth } from "./middleware/auth";
+
+console.log("check processenv gateway", process.env.GATEWAY_PORT);
 
 const app = express();
 const PORT = process.env.GATEWAY_PORT || 3000;
@@ -21,9 +25,12 @@ const alertService = new AlertService({
 app.use(helmet()); // security headers
 app.use(cors()); // cors
 app.use(express.json());
-
+app.use(cookieParser());
 // swagger ui
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+//auth middleware
+app.use(refreshToken);
 
 // gateway middleware
 const authProxy = createProxyMiddleware({
@@ -63,6 +70,7 @@ app.get("/health", async (req, res) => {
 });
 
 // auth service
+app.use("/api/auth/logout", requireAuth, authProxy);
 app.use("/api/auth", authProxy);
 
 app.listen(PORT, () => {

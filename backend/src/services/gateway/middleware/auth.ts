@@ -1,12 +1,14 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-export const COOKIE_NAME = "auth_token";
-export const MAX_AGE = 1000 * 60 * 60 * 24 * 3; // 3 days
-export const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 
 interface CustomRequest extends Request {
   user?: jwt.JwtPayload;
 }
+console.log("check processenv", process.env.JWT_SECRET);
+
+const COOKIE_NAME = process.env.COOKIE_NAME || "auth_token";
+const JWT_SECRET = process.env.JWT_SECRET || "my-secret-key";
+const MAX_AGE = Number(process.env.MAX_AGE) || 259200000;
 
 // refresh token middleware to refresh the token if it is not expired
 export const refreshToken = (
@@ -14,7 +16,7 @@ export const refreshToken = (
   res: Response,
   next: NextFunction
 ) => {
-  const token = req.cookies[COOKIE_NAME];
+  const token = req.cookies?.[COOKIE_NAME];
   if (token) {
     try {
       const decoded = jwt.verify(token, JWT_SECRET) as jwt.JwtPayload;
@@ -38,15 +40,6 @@ export const refreshToken = (
         });
       }
     } catch (error) {
-      if (error instanceof jwt.TokenExpiredError) {
-        res.status(401).json({ error: "Token expired" });
-      }
-      if (error instanceof jwt.JsonWebTokenError) {
-        res.status(401).json({ error: "Invalid token" });
-      }
-      if (error instanceof Error) {
-        res.status(401).json({ error: error.message });
-      }
       res.clearCookie(COOKIE_NAME);
     }
   }

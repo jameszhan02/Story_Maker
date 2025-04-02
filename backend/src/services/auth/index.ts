@@ -1,30 +1,27 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import chalk from "chalk";
-import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, { Request, Response, Router } from "express";
 import jwt from "jsonwebtoken";
-import {
-  COOKIE_NAME,
-  JWT_SECRET,
-  MAX_AGE,
-  refreshToken,
-  requireAuth,
-} from "./authmiddleware";
+
 const prisma = new PrismaClient();
+
+// get cookie settings from env
+console.log("check processenv", process.env.JWT_SECRET);
+const COOKIE_NAME = process.env.COOKIE_NAME || "auth_token";
+const JWT_SECRET = process.env.JWT_SECRET || "my-secret-key";
+const MAX_AGE = Number(process.env.MAX_AGE) || 259200000;
 
 interface PrismaError {
   code: string;
   meta?: { target: string[] };
 }
 
-const app = express();
+export const app = express();
 const router = Router();
 app.use(cors());
 app.use(express.json());
-app.use(cookieParser());
-app.use(refreshToken);
 
 /**
  * @swagger
@@ -105,6 +102,7 @@ router.post("/register", async (req: Request, res: Response) => {
  *         description: Internal server error
  */
 router.post("/login", async (req: Request, res: Response) => {
+  console.log({ JWT_SECRET });
   const { username, password } = req.body;
   try {
     const user = await prisma.users.findUnique({
@@ -154,7 +152,7 @@ router.post("/login", async (req: Request, res: Response) => {
  *       401:
  *         description: Unauthorized
  */
-router.post("/logout", requireAuth, (_req: Request, res: Response) => {
+router.post("/logout", (_req: Request, res: Response) => {
   res.clearCookie(COOKIE_NAME);
   res.status(200).json({ message: "Logout successful" });
 });
