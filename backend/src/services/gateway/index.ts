@@ -1,7 +1,8 @@
 import chalk from "chalk";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import express from "express";
+import "dotenv/config";
+import express, { NextFunction, Request, Response } from "express";
 import helmet from "helmet";
 import { createProxyMiddleware, fixRequestBody } from "http-proxy-middleware";
 import swaggerUi from "swagger-ui-express";
@@ -9,8 +10,6 @@ import { swaggerSpec } from "../../docs/swagger";
 import { AlertService } from "./alert";
 import { getSystemHealth } from "./health";
 import { refreshToken, requireAuth } from "./middleware/auth";
-
-console.log("check processenv gateway", process.env.GATEWAY_PORT);
 
 const app = express();
 const PORT = process.env.GATEWAY_PORT || 3000;
@@ -64,14 +63,22 @@ app.use(alertService.errorRateAlert);
  *       500:
  *         description: System health check failed
  */
-app.get("/health", async (req, res) => {
+app.get("/health", async (_req, res) => {
   const health = await getSystemHealth("API Gateway", {});
   res.json(health);
 });
 
+//
+const protectedPaths = ["/logout"];
+const checkAuthForPath = (req: Request, res: Response, next: NextFunction) => {
+  if (protectedPaths.includes(req.path)) {
+    return requireAuth(req, res, next);
+  }
+  next();
+};
+
 // auth service
-app.use("/api/auth/logout", requireAuth, authProxy);
-app.use("/api/auth", authProxy);
+app.use("/api/auth", checkAuthForPath, authProxy);
 
 app.listen(PORT, () => {
   console.log(

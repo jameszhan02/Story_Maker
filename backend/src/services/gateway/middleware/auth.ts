@@ -4,7 +4,6 @@ import jwt from "jsonwebtoken";
 interface CustomRequest extends Request {
   user?: jwt.JwtPayload;
 }
-console.log("check processenv", process.env.JWT_SECRET);
 
 const COOKIE_NAME = process.env.COOKIE_NAME || "auth_token";
 const JWT_SECRET = process.env.JWT_SECRET || "my-secret-key";

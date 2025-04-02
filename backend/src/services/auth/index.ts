@@ -2,13 +2,13 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import chalk from "chalk";
 import cors from "cors";
+import "dotenv/config";
 import express, { Request, Response, Router } from "express";
 import jwt from "jsonwebtoken";
 
 const prisma = new PrismaClient();
 
 // get cookie settings from env
-console.log("check processenv", process.env.JWT_SECRET);
 const COOKIE_NAME = process.env.COOKIE_NAME || "auth_token";
 const JWT_SECRET = process.env.JWT_SECRET || "my-secret-key";
 const MAX_AGE = Number(process.env.MAX_AGE) || 259200000;
@@ -102,7 +102,6 @@ router.post("/register", async (req: Request, res: Response) => {
  *         description: Internal server error
  */
 router.post("/login", async (req: Request, res: Response) => {
-  console.log({ JWT_SECRET });
   const { username, password } = req.body;
   try {
     const user = await prisma.users.findUnique({
