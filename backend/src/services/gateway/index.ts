@@ -30,6 +30,12 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 //auth middleware
 app.use(refreshToken);
+//insert api key middleware here
+app.use((req: Request, res: Response, next: NextFunction) => {
+  const apiKey = process.env.API_KEY;
+  req.headers["x-api-key"] = apiKey;
+  next();
+});
 
 // gateway middleware
 const authProxy = createProxyMiddleware({
@@ -68,7 +74,6 @@ app.get("/health", async (_req, res) => {
   res.json(health);
 });
 
-//
 const protectedPaths = ["/logout"];
 const checkAuthForPath = (req: Request, res: Response, next: NextFunction) => {
   if (protectedPaths.includes(req.path)) {

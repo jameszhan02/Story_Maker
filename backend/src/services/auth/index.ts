@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import chalk from "chalk";
 import cors from "cors";
 import "dotenv/config";
-import express, { Request, Response, Router } from "express";
+import express, { NextFunction, Request, Response, Router } from "express";
 import jwt from "jsonwebtoken";
 
 const prisma = new PrismaClient();
@@ -22,6 +22,15 @@ export const app = express();
 const router = Router();
 app.use(cors());
 app.use(express.json());
+//Verify API Key
+app.use((req: Request, res: Response, next: NextFunction) => {
+  const apiKey = req.headers["x-api-key"];
+  if (apiKey !== process.env.API_KEY) {
+    res.status(401).json({ error: "Forbidden" });
+    return;
+  }
+  next();
+});
 
 /**
  * @swagger

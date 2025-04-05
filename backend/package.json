@@ -5,7 +5,6 @@
   "license": "MIT",
   "dependencies": {
     "@prisma/client": "^6.5.0",
-    "@types/supertest": "^6.0.3",
     "bcryptjs": "^3.0.2",
     "chalk": "4.1.2",
     "cookie-parser": "^1.4.7",
@@ -20,7 +19,6 @@
     "pg": "^8.14.1",
     "prisma": "^6.5.0",
     "socket.io": "^4.8.1",
-    "supertest": "^7.1.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
   },
@@ -30,9 +28,12 @@
     "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.13.14",
+    "@types/supertest": "^6.0.3",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.8",
+    "dotenv-cli": "^8.0.0",
     "jest": "^29.7.0",
+    "supertest": "^7.1.0",
     "ts-jest": "^29.3.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.2"
@@ -41,6 +42,7 @@
     "auth": "sh src/scripts/authscript",
     "gateway": "sh src/scripts/gateway",
     "dev:auth": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/services/auth/index.ts",
-    "dev:gateway": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/services/gateway/index.ts"
+    "dev:gateway": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/services/gateway/index.ts",
+    "test": "dotenv -e .env.test -- jest --coverage --env=node"
   }
 }
