@@ -26,52 +26,52 @@
  * WITH supertest, you can test the API endpoints by sending requests to the server and checking the responses. without actually running the server.
  */
 
-import { execSync } from "child_process";
-import request from "supertest";
-import { app } from "../index";
+import { execSync } from 'child_process'
+import request from 'supertest'
+import { app } from '../index'
 
 beforeAll(() => {
   //this will generate db by the schema.prisma if db is not exist
-  execSync("npx prisma db push");
-});
+  execSync('npx prisma db push')
+})
 
 afterAll(async () => {
   //this will drop the db and generate a new one by the schema.prisma
-  execSync("npx prisma db push --force-reset");
-});
+  execSync('npx prisma db push --force-reset')
+})
 
-describe("Auth Service [API]", () => {
-  describe("Register", () => {
+describe('Auth Service [API]', () => {
+  describe('Register', () => {
     const mockUser = {
-      username: "testuser",
-      password: "testpassword",
-    };
-    const apiKey = process.env.API_KEY;
-    it("Should register a user successfully", async () => {
+      username: 'testuser',
+      password: 'testpassword',
+    }
+    const apiKey = process.env.API_KEY
+    it('Should register a user successfully', async () => {
       const response = await request(app)
-        .post("/register")
-        .set({ "x-api-key": apiKey })
-        .send(mockUser);
-      expect(response.status).toBe(200);
-      expect(response.body.message).toBe("User registered successfully");
-    });
-    it("Should tell the user already exists", async () => {
+        .post('/register')
+        .set({ 'x-api-key': apiKey })
+        .send(mockUser)
+      expect(response.status).toBe(200)
+      expect(response.body.message).toBe('User registered successfully')
+    })
+    it('Should tell the user already exists', async () => {
       const response = await request(app)
-        .post("/register")
-        .set({ "x-api-key": apiKey })
-        .send(mockUser);
-      expect(response.status).toBe(409);
-      expect(response.body.error).toBe("Username already exists");
-    });
-    it("Should tell the user username and password are required", async () => {
+        .post('/register')
+        .set({ 'x-api-key': apiKey })
+        .send(mockUser)
+      expect(response.status).toBe(409)
+      expect(response.body.error).toBe('Username already exists')
+    })
+    it('Should tell the user username and password are required', async () => {
       const response = await request(app)
-        .post("/register")
-        .set({ "x-api-key": apiKey })
-        .send({ username: "userNoPWD" });
-      expect(response.status).toBe(400);
-      expect(response.body.error).toBe("Username and password are required");
-    });
-  });
+        .post('/register')
+        .set({ 'x-api-key': apiKey })
+        .send({ username: 'userNoPWD' })
+      expect(response.status).toBe(400)
+      expect(response.body.error).toBe('Username and password are required')
+    })
+  })
 
   // describe("Login", () => {
   //   it("should login a user successfully", async () => {
@@ -83,4 +83,4 @@ describe("Auth Service [API]", () => {
   //     expect(true).toBe(true);
   //   });
   // });
-});
+})

@@ -1,0 +1,14 @@
+{
+  "name": "story_maker",
+  "version": "1.0.0",
+  "description": "Backend for the application",
+  "type": "module",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.29.0",
+    "@typescript-eslint/parser": "^8.29.0",
+    "eslint": "^9.24.0"
+  },
+  "scripts": {
+    "lint": "eslint ."
+  }
+}
