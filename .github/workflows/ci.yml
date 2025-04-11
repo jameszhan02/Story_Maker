@@ -20,5 +20,5 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      - name: Run back end tests
-        run: cd backend && yarn test
+      - name: Running Backend Jest Test
+        run: cd backend && yarn install && yarn test
