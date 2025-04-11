@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "type": "module",
   "dependencies": {
     "@prisma/client": "^6.5.0",
     "amqplib": "^0.10.7",
