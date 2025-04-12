@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
-  "type": "module",
   "dependencies": {
     "@prisma/client": "^6.5.0",
     "amqplib": "^0.10.7",
@@ -47,6 +46,6 @@
     "gateway": "sh src/scripts/gateway",
     "dev:auth": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/services/auth/index.ts",
     "dev:gateway": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/services/gateway/index.ts",
-    "test": "dotenv -e .env.test -- jest --coverage --env=node"
+    "test": "dotenv -e .env.test -- jest --coverage --env=node --detectOpenHandles"
   }
 }

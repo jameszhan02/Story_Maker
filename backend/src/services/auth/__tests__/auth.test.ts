@@ -26,6 +26,7 @@
  * WITH supertest, you can test the API endpoints by sending requests to the server and checking the responses. without actually running the server.
  */
 
+import { afterAll, beforeAll, describe, expect, it } from '@jest/globals'
 import { execSync } from 'child_process'
 import request from 'supertest'
 import { app } from '../index'
@@ -48,26 +49,17 @@ describe('Auth Service [API]', () => {
     }
     const apiKey = process.env.API_KEY
     it('Should register a user successfully', async () => {
-      const response = await request(app)
-        .post('/register')
-        .set({ 'x-api-key': apiKey })
-        .send(mockUser)
+      const response = await request(app).post('/register').set({ 'x-api-key': apiKey }).send(mockUser)
       expect(response.status).toBe(200)
       expect(response.body.message).toBe('User registered successfully')
     })
     it('Should tell the user already exists', async () => {
-      const response = await request(app)
-        .post('/register')
-        .set({ 'x-api-key': apiKey })
-        .send(mockUser)
+      const response = await request(app).post('/register').set({ 'x-api-key': apiKey }).send(mockUser)
       expect(response.status).toBe(409)
       expect(response.body.error).toBe('Username already exists')
     })
     it('Should tell the user username and password are required', async () => {
-      const response = await request(app)
-        .post('/register')
-        .set({ 'x-api-key': apiKey })
-        .send({ username: 'userNoPWD' })
+      const response = await request(app).post('/register').set({ 'x-api-key': apiKey }).send({ username: 'userNoPWD' })
       expect(response.status).toBe(400)
       expect(response.body.error).toBe('Username and password are required')
     })

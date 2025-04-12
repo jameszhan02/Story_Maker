@@ -13,7 +13,7 @@ const COOKIE_NAME = process.env.COOKIE_NAME || 'auth_token'
 const JWT_SECRET = process.env.JWT_SECRET || 'my-secret-key'
 const MAX_AGE = Number(process.env.MAX_AGE) || 259200000
 
-interface PrismaError {
+type PrismaError = {
   code: string
   meta?: { target: string[] }
 }
@@ -165,6 +165,8 @@ app.use(router)
 
 const PORT = process.env.AUTH_PORT || 3001
 
-app.listen(PORT, () => {
-  console.log(`${chalk.green('Auth service is running on port')} ${chalk.yellow(PORT)}`)
-})
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`${chalk.green('Auth service is running on port')} ${chalk.yellow(PORT)}`)
+  })
+}
