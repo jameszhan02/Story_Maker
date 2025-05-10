@@ -8,7 +8,7 @@ import jwt from 'jsonwebtoken'
 
 const prisma = new PrismaClient()
 
-// get cookie settings from env
+// get cookie settings from env | some changes for test PR actions
 const COOKIE_NAME = process.env.COOKIE_NAME || 'auth_token'
 const JWT_SECRET = process.env.JWT_SECRET || 'my-secret-key'
 const MAX_AGE = Number(process.env.MAX_AGE) || 259200000
